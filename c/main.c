@@ -10,7 +10,7 @@ const char* encrypt(char text[255], short int key) {
 
 void revstr(char text[255], char reversed_string[255]) {
     for (char i = 0; i < strlen(text)-1; i++) {
-        reversed_string[i] = text[strlen(text)-1-i];
+        reversed_string[i] = text[strlen(text)-2-i];
     }
 }
 
