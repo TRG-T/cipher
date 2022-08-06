@@ -1,8 +1,15 @@
 #include <stdio.h>
 
+const char *encrypt(char text[255], short int key) {
+    for (char i = 0; text[i] != 10; i++) {
+        text[i] += key;
+    }
+    return text;
+}
+
 int main() {
     char user_text[255];
-    unsigned char user_key[255];
+    char user_key[255];
     const char LATIN[5][6] = {
         {'a', 'b', 'c', 'd', 'e', 'f'},
         {'g', 'h', 'i', 'j', 'k', 'l'},
@@ -24,4 +31,6 @@ int main() {
 
     printf("Enter key (number or string)\n");
     fgets(user_key, 255, stdin);
+
+    printf("%s", encrypt(user_text, 3));
 }
