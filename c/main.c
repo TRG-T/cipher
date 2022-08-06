@@ -1,7 +1,8 @@
 #include <stdio.h>
-#include <string.h>
 
 int main() {
+    char user_text[255];
+    unsigned char user_key[255];
     const char LATIN[5][6] = {
         {'a', 'b', 'c', 'd', 'e', 'f'},
         {'g', 'h', 'i', 'j', 'k', 'l'},
@@ -17,7 +18,10 @@ int main() {
         {"ነ", "ﬧ", "⚍", "⍊", "∴", "/"},
         {"॥", "Λ", "ʗ", "˨", "ᚴ", "ᚌ"},
     };
-    printf("%lu\n", strlen(GALACTIC[0][0]));
-    printf("%s\n", GALACTIC[0][0]);
 
+    printf("Enter text to be encrypted\n");
+    fgets(user_text, 255, stdin);
+
+    printf("Enter key (number or string)\n");
+    fgets(user_key, 255, stdin);
 }
