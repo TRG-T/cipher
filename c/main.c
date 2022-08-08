@@ -32,7 +32,7 @@ void index_of(char coords[2], char letter) {
     }
 }
 
-void encrypt(char *text, unsigned short key, SYMBOL (*final_text)) {
+void encrypt(char *text, unsigned short key, SYMBOL *final_text) {
     char coords[2];
     for (unsigned int i = 0; i < strlen(text); i++) {
         index_of(coords, text[i]);
