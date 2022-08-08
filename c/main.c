@@ -2,15 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-    const char LATIN[5][6] = {
-        {'a', 'b', 'c', 'd', 'e', 'f'},
-        {'g', 'h', 'i', 'j', 'k', 'l'},
-        {'m', 'n', 'o', 'p', 'q', 'r'},
-        {'s', 't', 'u', 'v', 'w', 'x'},
-        {'y', 'z', '!', '?', ':', ' '},
+typedef char SYMBOL[4];
+
+const char LATIN[5][6] = {
+    {'a', 'b', 'c', 'd', 'e', 'f'},
+    {'g', 'h', 'i', 'j', 'k', 'l'},
+    {'m', 'n', 'o', 'p', 'q', 'r'},
+    {'s', 't', 'u', 'v', 'w', 'x'},
+    {'y', 'z', '!', '?', ':', ' '},
 };
 
-// third index is 4 because utf-8 string can store up to 4 bytes
+// third index is 4 because utf-8 string can store up to 3 bytes + null terminator
 const char GALACTIC[5][6][4] = {
     {"ᔑ", "ʖ", "ᓵ", "↸", "Ŀ", "⎓"},
     {"ㅓ", "〒", "╎", "፧", "ꖌ", "ꖎ"},
@@ -30,7 +32,7 @@ void index_of(char coords[2], char letter) {
     }
 }
 
-void encrypt(char *text, unsigned short key, char (*final_text)[4]) {
+void encrypt(char *text, unsigned short key, SYMBOL (*final_text)) {
     char coords[2];
     for (unsigned int i = 0; i < strlen(text); i++) {
         index_of(coords, text[i]);
@@ -55,10 +57,10 @@ unsigned short user_key_to_key(char user_key[20]) {
 }
 
 int main() {
-    unsigned int max_len = 255;
-    unsigned int current_size = 255;
+    unsigned int len = 16;
+    unsigned int spare_size = 16;
 
-    char *user_text = malloc(max_len);
+    char *user_text = malloc(len);
     char user_key[20];
     unsigned short key;
 
@@ -68,22 +70,22 @@ int main() {
         int i = 0;
         int c;
         while (( c = getchar() ) != '\n' && c != EOF ) {
-            user_text[i++] = c;
-            if (i == current_size) {
-                current_size = i + max_len;
-                user_text = realloc(user_text, current_size);
+            user_text[i] = c;
+            if (++i == spare_size) {
+                spare_size = i + len;
+                user_text = realloc(user_text, spare_size);
             }
         }
-        //user_text[i] = '\0';
+        user_text[spare_size] = '\0';
     }
 
-    char *reversed_string = malloc(current_size);
-    char (*final_text)[4] = malloc(sizeof(int[current_size][4]));
+    char *reversed_string = malloc(spare_size);
+    SYMBOL *final_text = malloc(spare_size * sizeof(SYMBOL));
 
     revstr(user_text, reversed_string);
     printf("%s\n", reversed_string);
 
-    printf("Enter key (number or text, max 18 characters)\n");
+    printf("Enter key (number or text, only first 18 characters will be used)\n");
     fgets(user_key, sizeof(user_key), stdin);
     key = user_key_to_key(user_key);
     printf("key - %hu\n", key);
@@ -91,4 +93,5 @@ int main() {
     encrypt(reversed_string, key, final_text);
     for (unsigned int i = 0; i < strlen(reversed_string); i++) {
         printf("%s", final_text[i]);
-    }}
+    }
+}
