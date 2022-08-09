@@ -42,7 +42,7 @@ void encrypt(char *text, unsigned short key, SYMBOL *final_text) {
     }
 }
 
-void revstr(char *text, char reversed_string[255]) {
+void revstr(char *text, char *reversed_string) {
     for (unsigned int i = 0; i < strlen(text); i++) {
         reversed_string[i] = text[strlen(text) - 1 - i];
     }
