@@ -28,7 +28,7 @@ pub fn main() !void {
     var max_len: u32 = 255;
     var user_text = try allocator.alloc(u8, max_len);
 
-    print("Enter text to be encrypted\n", .{});
+    print("Enter text to be encrypted: ", .{});
     var byte = try stdin.readByte();
     var current_size: u32 = 0;
     while (byte != 0 and byte != '\n') {
@@ -42,24 +42,27 @@ pub fn main() !void {
         byte = try stdin.readByte();
     }
 
+    print("Enter key (1 ascii char): ", .{});
+    var user_key = try stdin.readByte();
+
     var final_text = try allocator.alloc(u16, current_size);
     var text = user_text[0..current_size];
     std.mem.reverse(u8, text);
 
     print("{s}\n", .{text});
 
-    encrypt(&text, &final_text);
+    encrypt(&text, &final_text, user_key);
     for (final_text) | char | {
         print("{u}", .{char});
     }
 }
 
-fn encrypt(text: *[]u8, final_text: *[]u16) void {
+fn encrypt(text: *[]u8, final_text: *[]u16, key: u16) void {
     var coords: [2]usize = undefined;
     var i: u32 = 0;
     while (i < text.len) : (i+=1) {
         coords = index_of(text.*[i]);
-        final_text.*[i] = GALACTIC[coords[0]][coords[1]];
+        final_text.*[i] = GALACTIC[coords[0]][(coords[1] + key) % 6];
     }
 }
 
