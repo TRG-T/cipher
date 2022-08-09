@@ -2,6 +2,23 @@ const std = @import("std");
 const Allocator = std.mem.Allocator;
 const print = @import("std").debug.print;
 
+const LATIN = [5][6]u8{
+    [_]u8{'a', 'b', 'c', 'd', 'e', 'f'},
+    [_]u8{'g', 'h', 'i', 'j', 'k', 'l'},
+    [_]u8{'m', 'n', 'o', 'p', 'q', 'r'},
+    [_]u8{'s', 't', 'u', 'v', 'w', 'x'},
+    [_]u8{'y', 'z', '!', '?', ':', ' '},
+};
+
+const GALACTIC = [5][6]u16{
+    [_]u16{'ᔑ', 'ʖ', 'ᓵ', '↸', 'Ŀ', '⎓'},
+    [_]u16{'ㅓ', '〒', '╎', '፧', 'ꖌ', 'ꖎ'},
+    [_]u16{'ᒲ', 'リ', 'フ', '¡', 'ᑑ', '።'},
+    [_]u16{'ነ', 'ﬧ', '⚍', '⍊', '∴', '/'},
+    [_]u16{'॥', 'Λ', 'ʗ', '˨', 'ᚴ', 'ᚌ'},
+};
+
+
 pub fn main() !void {
     const stdin = std.io.getStdIn().reader();
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
@@ -25,8 +42,34 @@ pub fn main() !void {
         byte = try stdin.readByte();
     }
 
+    var final_text = try allocator.alloc(u16, current_size);
     var text = user_text[0..current_size];
     std.mem.reverse(u8, text);
 
-    print("{s}", .{text});
+    print("{s}\n", .{text});
+
+    encrypt(&text, &final_text);
+    for (final_text) | char | {
+        print("{u}", .{char});
+    }
+}
+
+fn encrypt(text: *[]u8, final_text: *[]u16) void {
+    var coords: [2]usize = undefined;
+    var i: u32 = 0;
+    while (i < text.len) : (i+=1) {
+        coords = index_of(text.*[i]);
+        final_text.*[i] = GALACTIC[coords[0]][coords[1]];
+    }
+}
+
+fn index_of(letter: u8) [2]usize {
+    for (LATIN) | row, i | {
+        for (row) | cell , j | {
+            if (cell == letter) {
+                return [2]usize {i, j};
+            }
+        }
+    }
+    return [2]usize {0,0};
 }
